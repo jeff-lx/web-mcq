@@ -26,6 +26,8 @@ export default function App() {
     selectedAnswerIndex,
     isCorrect,
     streak,
+    results,
+    transitionTrigger,
     startGame,
     submitAnswer,
     nextQuestion,
@@ -49,13 +51,20 @@ export default function App() {
 
   return (
     <div className="relative h-screen w-screen overflow-hidden flex flex-col">
-      <Background image={currentQuestion?.backgroundImage} />
+      <Background 
+        image={currentQuestion?.backgroundImage} 
+        flashTrigger={transitionTrigger}
+      />
 
       {/* Top Bar */}
       <header className="relative z-20 p-4 flex items-center justify-between">
-        <div className="flex-1">
+        <div className="flex-1 max-w-[60%]">
           {gameState !== 'intro' && gameState !== 'finished' && (
-             <ProgressBar current={currentQuestionIndex} total={totalQuestions} color={config?.accentColor} />
+             <ProgressBar 
+               current={currentQuestionIndex} 
+               total={totalQuestions} 
+               results={results}
+             />
           )}
         </div>
         <div className="ml-4">

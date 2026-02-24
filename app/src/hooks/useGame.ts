@@ -12,6 +12,8 @@ export function useGame() {
   const [selectedAnswerIndex, setSelectedAnswerIndex] = useState<number | null>(null);
   const [isCorrect, setIsCorrect] = useState<boolean>(false);
   const [streak, setStreak] = useState(0);
+  const [results, setResults] = useState<(boolean | null)[]>([]);
+  const [transitionTrigger, setTransitionTrigger] = useState<{ type: 'correct' | 'incorrect', timestamp: number } | null>(null);
 
   // Initialize Data
   useEffect(() => {
@@ -19,6 +21,7 @@ export function useGame() {
       const { config: parsedConfig, questions: parsedQuestions } = parseGameData();
       setConfig(parsedConfig);
       setQuestions(parsedQuestions);
+      setResults(new Array(parsedQuestions.length).fill(null));
       setGameState('intro');
     };
 
@@ -61,18 +64,40 @@ export function useGame() {
     setIsCorrect(correct);
     setGameState('feedback');
 
+    // Update results history
+    setResults(prev => {
+      const newResults = [...prev];
+      newResults[currentQuestionIndex] = correct;
+      return newResults;
+    });
+
     if (correct) {
-      const newScore = score + currentQuestion.points;
-      setScore(newScore);
-      setStreak(s => s + 1);
+      // Score update is now delayed until nextQuestion (feedback close)
       // Send score tick to Unity
       sendNewScoreEvent(true);
     } else {
-      setStreak(0);
+      // Streak reset is now delayed until nextQuestion
     }
   }, [gameState, questions, currentQuestionIndex, score]);
 
   const nextQuestion = useCallback(() => {
+    // Apply delayed score/streak updates
+    let currentScore = score;
+    if (isCorrect) {
+      const points = questions[currentQuestionIndex].points;
+      currentScore += points;
+      setScore(currentScore);
+      setStreak(s => s + 1);
+    } else {
+      setStreak(0);
+    }
+
+    // Trigger background flash
+    setTransitionTrigger({ 
+      type: isCorrect ? 'correct' : 'incorrect', 
+      timestamp: Date.now() 
+    });
+
     if (currentQuestionIndex < questions.length - 1) {
       setCurrentQuestionIndex(prev => prev + 1);
       setSelectedAnswerIndex(null);
@@ -81,9 +106,9 @@ export function useGame() {
       setGameState('finished');
       // Calculate max score
       const maxScore = questions.reduce((acc, q) => acc + q.points, 0);
-      sendModuleScoreEvent("MCQ Module", config?.appTitle || "Web Quiz", score, maxScore);
+      sendModuleScoreEvent("MCQ Module", config?.appTitle || "Web Quiz", currentScore, maxScore);
     }
-  }, [currentQuestionIndex, questions, config, score]);
+  }, [currentQuestionIndex, questions, config, score, isCorrect]);
 
   const quitGame = () => {
     handleContinueToUnity();
@@ -99,6 +124,8 @@ export function useGame() {
     selectedAnswerIndex,
     isCorrect,
     streak,
+    results,
+    transitionTrigger,
     startGame,
     submitAnswer,
     nextQuestion,
