@@ -32,15 +32,27 @@ export function AnswerGrid({
         
         if (showResult) {
           if (isCorrect) {
-            stateStyles = "bg-neon-green/20 border-neon-green text-neon-green shadow-[0_0_15px_rgba(34,255,136,0.3)]";
+            stateStyles = "bg-opacity-20 border-opacity-100 shadow-[0_0_15px_rgba(34,255,136,0.3)]";
           } else if (isSelected && !isCorrect) {
-            stateStyles = "bg-neon-red/20 border-neon-red text-neon-red";
+            stateStyles = "bg-opacity-20 border-opacity-100";
           } else {
             stateStyles = "opacity-50 bg-slate-900 border-transparent";
           }
         } else if (isSelected) {
-           stateStyles = "bg-neon-blue border-neon-blue text-white";
+           stateStyles = "bg-opacity-100 border-opacity-100 text-white";
         }
+
+        const dynamicStyle = {
+          backgroundColor: showResult 
+            ? (isCorrect ? config?.correctColor : (isSelected ? config?.incorrectColor : undefined))
+            : (isSelected ? config?.primaryColor : undefined),
+          borderColor: showResult 
+            ? (isCorrect ? config?.correctColor : (isSelected ? config?.incorrectColor : undefined))
+            : (isSelected ? config?.primaryColor : undefined),
+          color: showResult 
+            ? (isCorrect ? config?.correctColor : (isSelected ? config?.incorrectColor : config?.textColor))
+            : (isSelected ? config?.textColor : config?.textColor),
+        };
 
         return (
           <motion.button
@@ -54,8 +66,10 @@ export function AnswerGrid({
             className={cn(
               "relative p-4 rounded-2xl border-2 text-left font-medium text-lg transition-all duration-300",
               stateStyles,
-              "flex items-center justify-between group"
+              "flex items-center justify-between group",
+              !showResult && !isSelected && "bg-slate-800/80 border-white/10 hover:bg-slate-700"
             )}
+            style={showResult || isSelected ? dynamicStyle : { color: config?.textColor }}
           >
             <span className="z-10">{answer}</span>
             
@@ -63,7 +77,8 @@ export function AnswerGrid({
               <motion.div
                 initial={{ scale: 0 }}
                 animate={{ scale: 1 }}
-                className="bg-neon-green text-black rounded-full p-1"
+                className="rounded-full p-1 text-black"
+                style={{ backgroundColor: config?.correctColor }}
               >
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="4">
                   <polyline points="20 6 9 17 4 12"></polyline>
@@ -75,7 +90,8 @@ export function AnswerGrid({
               <motion.div
                 initial={{ scale: 0 }}
                 animate={{ scale: 1 }}
-                className="bg-neon-red text-white rounded-full p-1"
+                className="rounded-full p-1 text-white"
+                style={{ backgroundColor: config?.incorrectColor }}
               >
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="4">
                   <line x1="18" y1="6" x2="6" y2="18"></line>

@@ -52,7 +52,12 @@ export function FeedbackPopup({
               className="absolute inset-0 flex items-center justify-center pointer-events-none"
             >
               <div 
-                className={`p-8 rounded-full border-4 shadow-[0_0_50px_currentColor] ${isCorrect ? 'bg-neon-green/20 border-neon-green text-neon-green' : 'bg-neon-red/20 border-neon-red text-neon-red'}`}
+                className={`p-8 rounded-full border-4 shadow-[0_0_50px_currentColor]`}
+                style={{
+                  backgroundColor: isCorrect ? `${config?.correctColor}33` : `${config?.incorrectColor}33`, // 33 is ~20% opacity
+                  borderColor: isCorrect ? config?.correctColor : config?.incorrectColor,
+                  color: isCorrect ? config?.correctColor : config?.incorrectColor
+                }}
               >
                 {isCorrect ? <Check size={80} strokeWidth={4} /> : <X size={80} strokeWidth={4} />}
               </div>
@@ -68,14 +73,16 @@ export function FeedbackPopup({
             >
               {/* Header Color Bar */}
               <div 
-                className={`absolute top-0 left-0 right-0 h-2 ${isCorrect ? 'bg-neon-green' : 'bg-neon-red'}`} 
+                className="absolute top-0 left-0 right-0 h-2"
+                style={{ backgroundColor: isCorrect ? config?.correctColor : config?.incorrectColor }}
               />
 
               <div className="mt-4 text-center space-y-4">
                 <motion.h2 
                   initial={{ y: 20, opacity: 0 }}
                   animate={{ y: 0, opacity: 1 }}
-                  className={`text-2xl font-bold uppercase tracking-wide ${isCorrect ? 'text-neon-green' : 'text-neon-red'}`}
+                  className="text-2xl font-bold uppercase tracking-wide"
+                  style={{ color: isCorrect ? config?.correctColor : config?.incorrectColor }}
                 >
                   {question.feedbackTitle || (isCorrect ? "Correct!" : "Incorrect")}
                 </motion.h2>
@@ -89,7 +96,10 @@ export function FeedbackPopup({
                   <p className="text-slate-300 text-sm mb-1 uppercase tracking-wider font-bold opacity-60">
                     Correct Answer
                   </p>
-                  <p className="text-white font-medium text-lg">
+                  <p 
+                    className="font-medium text-lg"
+                    style={{ color: config?.textColor }}
+                  >
                     {question.answers[question.correctAnswerIndex]}
                   </p>
                 </motion.div>

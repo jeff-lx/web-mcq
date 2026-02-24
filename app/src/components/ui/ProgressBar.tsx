@@ -6,9 +6,10 @@ interface ProgressBarProps {
   total: number;
   className?: string;
   results?: (boolean | null)[]; // Array of results: true=correct, false=incorrect, null=unanswered
+  config?: any; // Pass config for colors
 }
 
-export function ProgressBar({ current, total, className, results = [] }: ProgressBarProps) {
+export function ProgressBar({ current, total, className, results = [], config }: ProgressBarProps) {
   return (
     <div className={cn("w-full flex gap-1", className)}>
       {Array.from({ length: total }).map((_, index) => {
@@ -16,15 +17,24 @@ export function ProgressBar({ current, total, className, results = [] }: Progres
         let bgColor = "bg-slate-800/50";
         let borderColor = "border-white/5";
         let shadow = "";
+        let customStyle = {};
 
         if (result === true) {
-          bgColor = "bg-neon-green";
-          borderColor = "border-neon-green";
+          bgColor = "";
+          borderColor = "";
           shadow = "shadow-[0_0_8px_rgba(34,255,136,0.6)]";
+          customStyle = {
+            backgroundColor: config?.correctColor || "#22FF88",
+            borderColor: config?.correctColor || "#22FF88"
+          };
         } else if (result === false) {
-          bgColor = "bg-neon-red";
-          borderColor = "border-neon-red";
+          bgColor = "";
+          borderColor = "";
           shadow = "shadow-[0_0_8px_rgba(255,59,59,0.6)]";
+          customStyle = {
+            backgroundColor: config?.incorrectColor || "#FF3B3B",
+            borderColor: config?.incorrectColor || "#FF3B3B"
+          };
         } else if (index === current) {
           bgColor = "bg-white/20";
           borderColor = "border-white/20";
@@ -42,6 +52,7 @@ export function ProgressBar({ current, total, className, results = [] }: Progres
               borderColor,
               shadow
             )}
+            style={customStyle}
           />
         );
       })}

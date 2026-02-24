@@ -1,10 +1,17 @@
 app_title	MCQ Arcade
+app_subtitle	Test your knowledge and beat the high score!
+start_quiz_label	Start Quiz
 primary_color	#1B6BFF
 accent_color	#00E5FF
 correct_color	#22FF88
 incorrect_color	#FF3B3B
+text_color	#FFFFFF
+background_color	#020617
 feedback_continue_label	Continue
 end_continue_label	Continue
+end_screen_title	Complete!
+end_screen_body	You finished the quiz
+end_screen_score_label	Final Score
 
 question_1	What planet do we live on?
 question_1_answer_1	Mercury

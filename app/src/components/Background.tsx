@@ -1,44 +1,49 @@
 import { motion, AnimatePresence, useAnimation } from "motion/react";
 import { useEffect, useState } from "react";
+import { GameConfig } from "@/lib/gameData";
 
 interface BackgroundProps {
   image?: string;
   flashTrigger?: { type: 'correct' | 'incorrect', timestamp: number } | null;
+  config?: GameConfig | null;
 }
 
-export function Background({ image, flashTrigger }: BackgroundProps) {
+export function Background({ image, flashTrigger, config }: BackgroundProps) {
   const [neurons, setNeurons] = useState<{ id: number; x: number; y: number; delay: number }[]>([]);
   const neuronControls = useAnimation();
 
-  // Generate random neurons
-  useEffect(() => {
-    const newNeurons = Array.from({ length: 15 }).map((_, i) => ({
-      id: i,
-      x: Math.random() * 100,
-      y: Math.random() * 100,
-      delay: Math.random() * 5,
-    }));
-    setNeurons(newNeurons);
-  }, []);
+  // ... (useEffect for neurons generation)
 
   // Handle Flash Trigger
   useEffect(() => {
     if (flashTrigger) {
-      const color = flashTrigger.type === 'correct' ? '#22FF88' : '#FF3B3B'; // Neon Green / Red
+      const color = flashTrigger.type === 'correct' 
+        ? (config?.correctColor || '#22FF88') 
+        : (config?.incorrectColor || '#FF3B3B');
       
       // Flash Neurons
       neuronControls.start({
-        backgroundColor: [null, color, "#1B6BFF"], // Flash to color then back to blue
+        backgroundColor: [null, color, config?.primaryColor || "#1B6BFF"], 
         scale: [null, 1.5, 1],
         transition: { duration: 0.5, ease: "easeOut" }
       });
     }
-  }, [flashTrigger, neuronControls]);
+  }, [flashTrigger, neuronControls, config]);
 
   return (
-    <div className="fixed inset-0 -z-10 overflow-hidden bg-slate-950">
+    <div 
+      className="fixed inset-0 -z-10 overflow-hidden"
+      style={{ backgroundColor: config?.backgroundColor || "#020617" }}
+    >
       {/* Base Gradient */}
-      <div className="absolute inset-0 bg-gradient-to-b from-slate-900 via-slate-950 to-black" />
+      <div 
+        className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black" 
+        style={{ 
+           // Optional: You could mix the primary color into the gradient if desired, 
+           // but keeping it subtle is usually safer.
+           // For now, let's respect the backgroundColor as the base.
+        }}
+      />
 
       {/* Flash Overlay */}
       <AnimatePresence>
@@ -49,32 +54,33 @@ export function Background({ image, flashTrigger }: BackgroundProps) {
             animate={{ opacity: 0 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.8 }}
-            className={`absolute inset-0 mix-blend-overlay z-10 ${flashTrigger.type === 'correct' ? 'bg-neon-green' : 'bg-neon-red'}`}
+            className="absolute inset-0 mix-blend-overlay z-10"
+            style={{ 
+              backgroundColor: flashTrigger.type === 'correct' 
+                ? (config?.correctColor || '#22FF88') 
+                : (config?.incorrectColor || '#FF3B3B') 
+            }}
           />
         )}
       </AnimatePresence>
 
-      {/* Optional Image */}
-      {image && (
-        <motion.div
-          initial={{ opacity: 0, scale: 1.1 }}
-          animate={{ opacity: 0.4, scale: 1 }}
-          transition={{ duration: 1.5 }}
-          className="absolute inset-0 bg-cover bg-center opacity-30 mix-blend-overlay"
-          style={{ backgroundImage: `url(${image})` }}
-        />
-      )}
+      {/* ... (Image) ... */}
 
       {/* Neuron Network Effect */}
       <div className="absolute inset-0 opacity-30">
         {neurons.map((neuron) => (
           <motion.div
             key={neuron.id}
-            className="absolute w-1 h-1 bg-neon-blue rounded-full shadow-[0_0_10px_currentColor]"
-            style={{ left: `${neuron.x}%`, top: `${neuron.y}%` }}
+            className="absolute w-1 h-1 rounded-full shadow-[0_0_10px_currentColor]"
+            style={{ 
+              left: `${neuron.x}%`, 
+              top: `${neuron.y}%`,
+              backgroundColor: config?.primaryColor || "#1B6BFF",
+              color: config?.primaryColor || "#1B6BFF"
+            }}
             animate={neuronControls}
             // Default animation (breathing)
-            initial={{ opacity: 0, scale: 0, backgroundColor: "#1B6BFF" }}
+            initial={{ opacity: 0, scale: 0, backgroundColor: config?.primaryColor || "#1B6BFF" }}
             whileInView={{
               opacity: [0, 1, 0],
               scale: [0, 2, 0],
@@ -91,7 +97,6 @@ export function Background({ image, flashTrigger }: BackgroundProps) {
           {neurons.map((neuron, i) => {
             if (i >= neurons.length - 1) return null;
             const next = neurons[i + 1];
-            // Only connect some neurons to avoid clutter
             if (Math.random() > 0.5) return null; 
             
             return (
@@ -101,7 +106,7 @@ export function Background({ image, flashTrigger }: BackgroundProps) {
                 y1={`${neuron.y}%`}
                 x2={`${next.x}%`}
                 y2={`${next.y}%`}
-                stroke="#1B6BFF"
+                stroke={config?.primaryColor || "#1B6BFF"}
                 strokeWidth="1"
                 initial={{ pathLength: 0, opacity: 0 }}
                 animate={{ pathLength: [0, 1, 0], opacity: [0, 0.5, 0] }}
@@ -128,7 +133,8 @@ export function Background({ image, flashTrigger }: BackgroundProps) {
           repeat: Infinity,
           ease: "easeInOut",
         }}
-        className="absolute -top-20 -left-20 w-96 h-96 bg-neon-blue/20 rounded-full blur-[100px]"
+        className="absolute -top-20 -left-20 w-96 h-96 rounded-full blur-[100px]"
+        style={{ backgroundColor: `${config?.primaryColor || '#1B6BFF'}33` }} // 33 is ~20% opacity hex
       />
       
       <motion.div
@@ -142,7 +148,8 @@ export function Background({ image, flashTrigger }: BackgroundProps) {
           ease: "easeInOut",
           delay: 2,
         }}
-        className="absolute top-1/3 -right-20 w-80 h-80 bg-neon-cyan/10 rounded-full blur-[80px]"
+        className="absolute top-1/3 -right-20 w-80 h-80 rounded-full blur-[80px]"
+        style={{ backgroundColor: `${config?.accentColor || '#00E5FF'}1A` }} // 1A is ~10% opacity hex
       />
 
        <motion.div
@@ -158,6 +165,7 @@ export function Background({ image, flashTrigger }: BackgroundProps) {
         }}
         className="absolute -bottom-20 left-1/3 w-[500px] h-[500px] bg-purple-500/10 rounded-full blur-[120px]"
       />
+
 
       {/* Grid Overlay */}
       <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20" />

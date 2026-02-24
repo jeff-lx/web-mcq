@@ -54,6 +54,7 @@ export default function App() {
       <Background 
         image={currentQuestion?.backgroundImage} 
         flashTrigger={transitionTrigger}
+        config={config}
       />
 
       {/* Top Bar */}
@@ -64,11 +65,12 @@ export default function App() {
                current={currentQuestionIndex} 
                total={totalQuestions} 
                results={results}
+               config={config}
              />
           )}
         </div>
         <div className="ml-4">
-          <ScoreDisplay score={score} streak={streak} />
+          <ScoreDisplay score={score} streak={streak} config={config} />
         </div>
       </header>
 
@@ -94,17 +96,20 @@ export default function App() {
                 </h1>
               </motion.div>
               
-              <p className="text-slate-400 text-lg max-w-[250px]">
-                Test your knowledge and beat the high score!
+              <p 
+                className="text-lg max-w-[250px]"
+                style={{ color: config?.textColor ? `${config.textColor}99` : undefined }} // 99 is ~60% opacity
+              >
+                {config?.appSubtitle || "Test your knowledge and beat the high score!"}
               </p>
 
               <Button 
                 size="lg" 
                 onClick={startGame}
                 className="w-48 shadow-[0_0_30px_rgba(27,107,255,0.4)] animate-pulse"
-                style={{ backgroundColor: config?.primaryColor }}
+                style={{ backgroundColor: config?.primaryColor, color: config?.textColor }}
               >
-                Start Quiz
+                {config?.startQuizLabel || "Start Quiz"}
               </Button>
             </motion.div>
           )}

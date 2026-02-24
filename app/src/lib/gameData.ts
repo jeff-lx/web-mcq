@@ -128,14 +128,27 @@ export const parseGameData = (): { config: GameConfig; questions: Question[] } =
   }
 
   // Parse Config
+  // Helper to get string with fallback if empty
+  const getString = (key: string, fallback: string) => {
+    const val = rawData[key];
+    return (val !== undefined && val !== "") ? String(val) : fallback;
+  };
+
   const config: GameConfig = {
-    appTitle: String(rawData["app_title"] || DEFAULT_CONFIG.appTitle),
-    primaryColor: String(rawData["primary_color"] || DEFAULT_CONFIG.primaryColor),
-    accentColor: String(rawData["accent_color"] || DEFAULT_CONFIG.accentColor),
-    correctColor: String(rawData["correct_color"] || DEFAULT_CONFIG.correctColor),
-    incorrectColor: String(rawData["incorrect_color"] || DEFAULT_CONFIG.incorrectColor),
-    feedbackContinueLabel: String(rawData["feedback_continue_label"] || DEFAULT_CONFIG.feedbackContinueLabel),
-    endContinueLabel: String(rawData["end_continue_label"] || DEFAULT_CONFIG.endContinueLabel),
+    appTitle: getString("app_title", DEFAULT_CONFIG.appTitle),
+    appSubtitle: getString("app_subtitle", DEFAULT_CONFIG.appSubtitle),
+    startQuizLabel: getString("start_quiz_label", DEFAULT_CONFIG.startQuizLabel),
+    primaryColor: getString("primary_color", DEFAULT_CONFIG.primaryColor),
+    accentColor: getString("accent_color", DEFAULT_CONFIG.accentColor),
+    correctColor: getString("correct_color", DEFAULT_CONFIG.correctColor),
+    incorrectColor: getString("incorrect_color", DEFAULT_CONFIG.incorrectColor),
+    textColor: getString("text_color", DEFAULT_CONFIG.textColor),
+    backgroundColor: getString("background_color", DEFAULT_CONFIG.backgroundColor),
+    feedbackContinueLabel: getString("feedback_continue_label", DEFAULT_CONFIG.feedbackContinueLabel),
+    endContinueLabel: getString("end_continue_label", DEFAULT_CONFIG.endContinueLabel),
+    endScreenTitle: getString("end_screen_title", DEFAULT_CONFIG.endScreenTitle),
+    endScreenBody: getString("end_screen_body", DEFAULT_CONFIG.endScreenBody),
+    endScreenScoreLabel: getString("end_screen_score_label", DEFAULT_CONFIG.endScreenScoreLabel),
   };
 
   // Parse Questions

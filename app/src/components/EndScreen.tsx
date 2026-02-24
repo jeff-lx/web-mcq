@@ -33,8 +33,15 @@ export function EndScreen({
         transition={{ type: "spring", damping: 12, stiffness: 100, delay: 0.2 }}
         className="relative"
       >
-        <div className="absolute inset-0 bg-neon-blue/30 blur-3xl rounded-full" />
-        <Trophy size={120} className="text-neon-cyan relative z-10 drop-shadow-[0_0_15px_rgba(0,229,255,0.5)]" />
+        <div 
+          className="absolute inset-0 blur-3xl rounded-full" 
+          style={{ backgroundColor: `${config?.accentColor || '#00E5FF'}4D` }} // 4D is ~30% opacity
+        />
+        <Trophy 
+          size={120} 
+          className="relative z-10 drop-shadow-[0_0_15px_currentColor]" 
+          style={{ color: config?.accentColor || "#00E5FF" }}
+        />
       </motion.div>
 
       <div className="space-y-2 relative z-10">
@@ -42,17 +49,19 @@ export function EndScreen({
           initial={{ y: 20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ delay: 0.4 }}
-          className="text-4xl font-bold uppercase tracking-widest text-white"
+          className="text-4xl font-bold uppercase tracking-widest"
+          style={{ color: config?.textColor || "#FFFFFF" }}
         >
-          Complete!
+          {config?.endScreenTitle || "Complete!"}
         </motion.h1>
         <motion.p
           initial={{ y: 20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ delay: 0.5 }}
-          className="text-slate-400 text-lg"
+          className="text-lg"
+          style={{ color: config?.textColor ? `${config.textColor}99` : "#94a3b8" }}
         >
-          You finished the quiz
+          {config?.endScreenBody || "You finished the quiz"}
         </motion.p>
       </div>
 
@@ -73,7 +82,8 @@ export function EndScreen({
             >
               <Star
                 size={32}
-                className={star <= stars ? "fill-neon-cyan text-neon-cyan" : "text-slate-700"}
+                className={star <= stars ? "" : "text-slate-700"}
+                style={star <= stars ? { fill: config?.accentColor || "#00E5FF", color: config?.accentColor || "#00E5FF" } : {}}
                 strokeWidth={star <= stars ? 0 : 2}
               />
             </motion.div>
@@ -81,16 +91,19 @@ export function EndScreen({
         </div>
 
         <div className="text-center">
-          <p className="text-slate-400 text-sm uppercase tracking-wider font-bold mb-1">Final Score</p>
+          <p className="text-sm uppercase tracking-wider font-bold mb-1" style={{ color: config?.textColor ? `${config.textColor}99` : "#94a3b8" }}>
+            {config?.endScreenScoreLabel || "Final Score"}
+          </p>
           <motion.div
             initial={{ scale: 0.5, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             transition={{ delay: 1, type: "spring" }}
-            className="text-5xl font-mono font-bold text-white text-glow"
+            className="text-5xl font-mono font-bold text-glow"
+            style={{ color: config?.textColor || "#FFFFFF" }}
           >
             {score}
           </motion.div>
-          <p className="text-slate-500 text-xs mt-2">out of {maxPossibleScore}</p>
+          <p className="text-xs mt-2" style={{ color: config?.textColor ? `${config.textColor}80` : "#64748b" }}>out of {maxPossibleScore}</p>
         </div>
       </motion.div>
 
