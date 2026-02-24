@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>MCQ Arcade</title>
+    <script>
+      window.unityData = {};
+      if (window.vuplex) {
+        addMessageListener();
+      } else {
+        window.addEventListener('vuplexready', addMessageListener);
+      }
+      function addMessageListener() {
+        window.vuplex.addEventListener('message', event => {
+          try {
+            // Handle both string and object data types safely
+            const data = typeof event.data === 'string' ? JSON.parse(event.data) : event.data;
+            window.unityData = data.sheets || {};
+            // Dispatch a custom event to notify React app that data is ready
+            window.dispatchEvent(new CustomEvent('unityDataReady'));
+          } catch (e) {
+            console.error('Error parsing Unity message:', e);
+          }
+        });
+      }
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
+

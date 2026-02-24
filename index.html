@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Web MCQ</title>
+    <script>
+      window.unityData = {};
+      if (window.vuplex) {
+        addMessageListener();
+      } else {
+        window.addEventListener('vuplexready', addMessageListener);
+      }
+      function addMessageListener() {
+        window.vuplex.addEventListener('message', event => {
+          try {
+            // Handle both string and object data types safely
+            const data = typeof event.data === 'string' ? JSON.parse(event.data) : event.data;
+            window.unityData = data.sheets || {};
+            // Dispatch a custom event to notify React app that data is ready
+            window.dispatchEvent(new CustomEvent('unityDataReady'));
+          } catch (e) {
+            console.error('Error parsing Unity message:', e);
+          }
+        });
+      }
+    </script>
+    <script type="module" crossorigin src="./assets/index-Bbsz7_P3.js"></script>
+    <link rel="stylesheet" crossorigin href="./assets/index-D9JWRk25.css">
+  </head>
+  <body>
+    <div id="root"></div>
+  </body>
+</html>
+

@@ -1,0 +1,37 @@
+app_title	MCQ Arcade
+primary_color	#1B6BFF
+accent_color	#00E5FF
+correct_color	#22FF88
+incorrect_color	#FF3B3B
+feedback_continue_label	Continue
+end_continue_label	Continue
+
+question_1	What planet do we live on?
+question_1_answer_1	Mercury
+question_1_answer_2	Pluto
+question_1_answer_3	Earth
+question_1_answer_4	Mars
+question_1_correct_answer_index	3
+question_1_correct_points	100
+question_1_background_image	https://images.unsplash.com/photo-1614730341194-75c60740a070?q=80&w=2574&auto=format&fit=crop
+question_1_feedback_title	Answer is Earth!
+question_1_feedback_body	Earth is the only known planet that supports life.
+
+question_2	Which element has the chemical symbol 'O'?
+question_2_answer_1	Gold
+question_2_answer_2	Oxygen
+question_2_answer_3	Osmium
+question_2_correct_answer_index	2
+question_2_correct_points	100
+question_2_feedback_title	Correct!
+question_2_feedback_body	Oxygen is essential for respiration.
+
+question_3	What is the powerhouse of the cell?
+question_3_answer_1	Nucleus
+question_3_answer_2	Mitochondria
+question_3_answer_3	Ribosome
+question_3_answer_4	Cytoplasm
+question_3_correct_answer_index	2
+question_3_correct_points	150
+question_3_feedback_title	Mitochondria!
+question_3_feedback_body	They generate most of the chemical energy needed to power the cell's biochemical reactions.
